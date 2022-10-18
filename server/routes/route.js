@@ -1,14 +1,14 @@
 const express = require("express");
-const chainRoute = express.Router();
+const userRoute = express.Router();
 const shell = require("shelljs");
-const { getMultiple } = require("../controller/user");
+const { getMultiple, login, register } = require("../controller/user");
 
-// chainRoute.get("/interact", () => {
+// userRoute.get("/interact", () => {
 //   // shell.exec("npx hardhat run scripts/interact.js");
 //   // console.log("oke");
 // });
 
-chainRoute.get("/test", async function (req, res, next) {
+userRoute.get("/test", async function (req, res, next) {
   try {
     res.json(await getMultiple());
   } catch (err) {
@@ -17,4 +17,21 @@ chainRoute.get("/test", async function (req, res, next) {
   }
 });
 
-module.exports = chainRoute;
+userRoute.post("/login", async (req, res, next) => {
+  try {
+    res.json(await login(req.body));
+  } catch (err) {
+    console.error(`Error while getting programming languages `, err.message);
+    next(err);
+  }
+});
+userRoute.post("/reg", async (req, res, next) => {
+  try {
+    res.json(await register(req.body));
+  } catch (err) {
+    console.error(`Error while getting programming languages `, err.message);
+    next(err);
+  }
+});
+
+module.exports = userRoute;
