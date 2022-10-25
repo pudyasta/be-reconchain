@@ -17,6 +17,6 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
-app.listen(80);
+app.listen(process.env.PORT || 3000);
 console.log("Server running");
 app.use("/user", userRoute);
