@@ -7,9 +7,11 @@ module.exports = {
   development: {
     client: "mysql2",
     connection: {
-      database: "reconchain",
+      host: "containers-us-west-106.railway.app",
+      port: 6802,
+      database: "railway",
       user: "root",
-      password: "root",
+      password: "1LQniOUjJ63bCKhiuB22",
     },
   },
 
