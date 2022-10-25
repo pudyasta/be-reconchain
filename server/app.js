@@ -17,6 +17,6 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
-app.listen(300);
+app.listen(80);
 console.log("Server running");
 app.use("/user", userRoute);
