@@ -13,6 +13,7 @@ exports.up = function (knex) {
     table.string("password", 60).notNullable();
     table.string("longitude", 60).notNullable();
     table.string("latitude", 60).notNullable();
+    table.string("profile_pict").notNullable();
   });
 };
 
