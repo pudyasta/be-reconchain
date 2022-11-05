@@ -11,7 +11,7 @@ exports.getMultiple = async (req, res) => {
 };
 
 exports.findOne = async (req, res) => {
-  const rows = await db.query(`SELECT * FROM users WHERE username="${req}" `);
+  const rows = await db.query(`SELECT * FROM users WHERE username="${req}"`);
   return {
     data: {
       username: rows[0]?.username,
@@ -29,7 +29,9 @@ exports.login = async (req, res, next) => {
   const { username, password } = req.body;
   const user = await this.findOne(username);
   if (!user.data.username) {
-    return res.json({ error: "Your account is not registered yet", code: 403 });
+    return res
+      .status(403)
+      .json({ error: "Your account is not registered yet", code: 403 });
   } else {
     try {
       const hashed = bcrypt.compareSync(password, user.data.password);
@@ -40,10 +42,10 @@ exports.login = async (req, res, next) => {
           token,
         });
       } else {
-        return res.json({ error: "Password do not match" });
+        return res.status(403).json({ error: "Invalid Account" });
       }
     } catch (err) {
-      return res.json({ err: err });
+      return res.status(500).json({ err: err });
     }
   }
 };
@@ -59,11 +61,10 @@ exports.register = async (req, res) => {
     longitude,
     latitude,
     profile_pict,
-  } = req;
+  } = req.body;
   const user = await this.findOne(username);
-
-  if (user.username) {
-    return { error: "username already taken" };
+  if (user.data.username) {
+    return res.status(403).json({ error: "username already taken" });
   } else {
     try {
       const hashed = bcrypt.hashSync(password, 10);
@@ -71,10 +72,10 @@ exports.register = async (req, res) => {
         `INSERT INTO users(username,email,role,company,location,password,longitude,latitude,profile_pict) VALUE ("${username}","${email}","${role}","${company}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}")`
       );
       if (success) {
-        return {
+        return res.status(200).json({
           code: 200,
           message: "Account has been created successfully",
-        };
+        });
       }
     } catch (err) {
       return res.status(500).json({

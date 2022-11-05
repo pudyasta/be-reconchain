@@ -11,14 +11,7 @@ const { trusted } = require("../services/middleware");
 
 userRoute.post("/login", login);
 
-userRoute.post("/reg", async (req, res, next) => {
-  try {
-    res.json(await register(req.body));
-  } catch (err) {
-    res.status(400).json({ data: err.message });
-    next(err);
-  }
-});
+userRoute.post("/reg", register);
 
 userRoute.put("/update", trusted, updateUser);
 

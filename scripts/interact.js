@@ -1,9 +1,9 @@
 // interact.js
+require("dotenv").config();
 const { ethers } = require("hardhat");
 
+const { PRIVATE_KEY } = process.env;
 const API_KEY = "DuO3sZEiyNDhkh8-PBeiAcGTmAxNig54";
-const PRIVATE_KEY =
-  "901c905d504285e8fa59cd289ba72b0495b92e7dd8f867db29cf136a14ece78e";
 const CONTRACT_ADDRESS = "0x8a95Fdb4D427dF6CD610Cbfa921F5A7031dc12fF";
 
 const contract = require("../artifacts/contracts/HelloWorld.sol/HelloWorld.json");
