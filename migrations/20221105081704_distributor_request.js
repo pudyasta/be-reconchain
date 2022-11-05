@@ -5,8 +5,8 @@
 exports.up = function (knex) {
   return knex.schema.createTable("distributor_request", (table) => {
     table.increments("id").primary();
-    table.integer("uid").references("id").inTable("users");
-    table.string("company_code", 20);
+    table.integer("uid");
+    table.string("company_code", 20).notNullable();
   });
 };
 

@@ -6,7 +6,7 @@
 require("dotenv").config();
 
 module.exports = {
-  development: {
+  staging: {
     client: "mysql2",
     connection: {
       host: process.env.DB_HOST,
@@ -17,21 +17,16 @@ module.exports = {
     },
   },
 
-  // staging: {
-  //   client: 'postgresql',
-  //   connection: {
-  //     database: 'my_db',
-  //     user:     'username',
-  //     password: 'password'
-  //   },
-  //   pool: {
-  //     min: 2,
-  //     max: 10
-  //   },
-  //   migrations: {
-  //     tableName: 'knex_migrations'
-  //   }
-  // },
+  development: {
+    client: "mysql2",
+    connection: {
+      host: process.env.LOCAL_DB_HOST,
+      user: process.env.LOCAL_DB_USER,
+      password: process.env.LOCAL_DB_PASSWORD,
+      database: process.env.LOCAL_DB_NAME,
+      port: process.env.LOCAL_DB_PORT,
+    },
+  },
 
   // production: {
   //   client: 'postgresql',

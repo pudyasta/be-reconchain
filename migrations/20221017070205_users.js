@@ -4,11 +4,7 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("users", (table) => {
-    table
-      .increments("id")
-      .primary()
-      .references("uid")
-      .inTable("distributor_request");
+    table.increments("id").primary();
     table.string("name", 20).notNullable();
     table.string("username", 20).notNullable();
     table.string("email").notNullable();
