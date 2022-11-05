@@ -5,6 +5,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable("users", (table) => {
     table.increments("id").primary();
+    table.string("name", 20).notNullable();
     table.string("username", 20).notNullable();
     table.string("email").notNullable();
     table.enum("role", ["producer", "distributor"]).notNullable();

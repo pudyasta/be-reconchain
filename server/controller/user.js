@@ -14,6 +14,7 @@ exports.findOne = async (req, res) => {
   const rows = await db.query(`SELECT * FROM users WHERE username="${req}"`);
   return {
     data: {
+      name: rows[0]?.name,
       username: rows[0]?.username,
       password: rows[0]?.password,
       email: rows[0]?.email,
@@ -52,6 +53,7 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res) => {
   const {
+    name,
     username,
     password,
     email,
@@ -69,7 +71,7 @@ exports.register = async (req, res) => {
     try {
       const hashed = bcrypt.hashSync(password, 10);
       const success = await db.query(
-        `INSERT INTO users(username,email,role,company,location,password,longitude,latitude,profile_pict) VALUE ("${username}","${email}","${role}","${company}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}")`
+        `INSERT INTO users(name,username,email,role,company,location,password,longitude,latitude,profile_pict) VALUE ("${name}","${username}","${email}","${role}","${company}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}")`
       );
       if (success) {
         return res.status(200).json({
