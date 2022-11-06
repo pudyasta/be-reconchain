@@ -1,30 +1,26 @@
 const db = require("../services/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { findOne } = require("../services/helper");
 
-exports.findOne = async (req, res) => {
-  const rows = await db.query(`SELECT * FROM users WHERE username="${req}"`);
-  return {
-    data: {
-      name: rows[0]?.name,
-      username: rows[0]?.username,
-      password: rows[0]?.password,
-      email: rows[0]?.email,
-      role: rows[0]?.role,
-      company: rows[0]?.company,
-      company_code: rows[0]?.company_code,
-      location: rows[0]?.location,
-      longitude: rows[0]?.longitude,
-      latitude: rows[0]?.latitude,
-      profile_pict: rows[0]?.profile_pict,
-      status: rows[0]?.is_active,
-    },
-  };
+exports.getDistributorRequest = async (req, res) => {
+  const user = res.data;
+  try {
+    const allAccounts = await db.query(
+      `SELECT * FROM users WHERE company_code="${user.company_code}" AND is_active=0`
+    );
+    res.status(200).json({
+      code: 200,
+      data: allAccounts,
+    });
+  } catch (error) {
+    res.status.json({ message: "Internal server Error" });
+  }
 };
 
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
-  const user = await this.findOne(username);
+  const user = await findOne(username);
   if (!user.data.username) {
     return res
       .status(801)
@@ -39,11 +35,14 @@ exports.login = async (req, res, next) => {
         const hashed = bcrypt.compareSync(password, user.data.password);
         if (hashed) {
           const token = jwt.sign(
-            { username, password, company_code: user.data.company_code },
-            "ppp",
             {
-              expiresIn: "2d",
-            }
+              username,
+              password,
+              company_code: user.data.company_code,
+              role: user.data.role,
+              email: user.data.email,
+            },
+            "ppp"
           );
           return res.json({
             user: user.data,
@@ -73,7 +72,7 @@ exports.register = async (req, res) => {
     profile_pict,
   } = req.body;
 
-  const user = await this.findOne(username);
+  const user = await findOne(username);
   if (user.data.username) {
     return res.status(804).json({ error: "username already taken" });
   } else {
@@ -105,35 +104,46 @@ exports.register = async (req, res) => {
           `INSERT INTO users(name,username,email,role,company,company_code,location,password,longitude,latitude,profile_pict,is_active) VALUE ("${name}","${username}","${email}","${role}","${req.body.company}","${companyCode}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}","${status}")`
         );
         if (success) {
-          const token = jwt.sign({ username, password, company_code }, "ppp", {
-            expiresIn: "2d",
-          });
+          const token = jwt.sign(
+            { username, password, company_code, role, email },
+            "ppp"
+          );
           return res.status(200).json({
             code: 200,
             message: "Account has been created successfully",
-            user: { ...userx, company: req.body.company },
+            user: {
+              ...userx,
+              company: req.body.company,
+              company_code: companyCode,
+            },
             token,
           });
         }
       } else {
-        const company = await db.query(
-          `SELECT company from users WHERE company_code="${company_code}"`
-        );
-        if (company[0]?.company) {
-          const success = await db.query(
-            `INSERT INTO users(name,username,email,role,company,company_code,location,password,longitude,latitude,profile_pict,is_active) VALUE ("${name}","${username}","${email}","${role}","${company[0].company}","${company_code}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}","${status}")`
+        if (req.body.company_code) {
+          const company = await db.query(
+            `SELECT company from users WHERE company_code="${company_code}"`
           );
-          if (success) {
-            return res.status(200).json({
-              code: 200,
-              message: "Account has been created successfully",
-              user: { ...userx, company: company[0].company },
+          if (company[0]?.company) {
+            const success = await db.query(
+              `INSERT INTO users(name,username,email,role,company,company_code,location,password,longitude,latitude,profile_pict,is_active) VALUE ("${name}","${username}","${email}","${role}","${company[0].company}","${company_code}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}","${status}")`
+            );
+            if (success) {
+              return res.status(200).json({
+                code: 200,
+                message: "Account has been created successfully",
+                user: { ...userx, company: company[0].company },
+              });
+            }
+          } else {
+            return res.status(805).json({
+              code: 400,
+              message: "Invalid company",
             });
           }
         } else {
-          return res.status(805).json({
-            code: 400,
-            message: "Invalid company",
+          return res.status(806).json({
+            message: "Invalid format",
           });
         }
       }
@@ -146,31 +156,20 @@ exports.register = async (req, res) => {
 };
 
 exports.updateUser = async (req, res, next) => {
-  const {
-    name,
-    password,
-    email,
-    company,
-    location,
-    profile_pict,
-    longitude,
-    latitude,
-  } = req.body;
-  const { user } = res.data;
+  const { name, password, email, profile_pict } = req.body;
+  const user = res.data;
   let hashed;
   if (password) {
     hashed = bcrypt.hashSync(password, 10);
   }
   try {
     const query = `UPDATE users SET name="${
-      name ? name : user.data.name
-    }",password="${password ? hashed : user.data.password}", email="${
-      email ? email : user.data.email
-    }",company="${company ? company : user.data.company}", location="${
-      location ? location : user.data.location
+      name ? name : user.name
+    }",password="${password ? hashed : user.password}", email="${
+      email ? email : user.email
     }",profile_pict="${
-      profile_pict ? profile_pict : user.data.profile_pict
-    }" WHERE username="${user.data.username}"`;
+      profile_pict ? profile_pict : user.profile_pict
+    }" WHERE username="${user.username}"`;
     const success = await db.query(query);
     if (success) {
       return res.status(200).json({
@@ -179,9 +178,35 @@ exports.updateUser = async (req, res, next) => {
     }
   } catch (error) {
     return res.status(500).json({
-      error,
+      error: "Internal server error",
     });
   }
 };
 
-exports.confirmAccount = async (req, res, next) => {};
+exports.confirmAccount = async (req, res, next) => {
+  try {
+    const acc = await db.query(
+      `SELECT company_code,is_active FROM users WHERE id=${req.params.id} `
+    );
+    if (acc.length > 0) {
+      if (acc[0].company_code == res.data.company_code) {
+        const success = await db.query(
+          `UPDATE users SET is_active=${1} WHERE id=${req.params.id}`
+        );
+        if (success) {
+          return res.status(200).json({
+            message: "Distributor confirmed",
+          });
+        }
+      } else {
+        return res.status(801).json({
+          message: "Account not found",
+        });
+      }
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
