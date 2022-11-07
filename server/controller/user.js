@@ -18,6 +18,21 @@ exports.getDistributorRequest = async (req, res) => {
   }
 };
 
+exports.getDistributorList = async (req, res, next) => {
+  const user = res.data;
+  try {
+    const allAccounts = await db.query(
+      `SELECT * FROM users WHERE company_code="${user.company_code}" AND is_active=1 AND role="distributor"`
+    );
+    res.status(200).json({
+      code: 200,
+      data: allAccounts,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server Error" });
+  }
+};
+
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
   const user = await findOne(username);
@@ -98,8 +113,7 @@ exports.register = async (req, res) => {
           .toUpperCase()
           .replace(/\s|[A,I,U,E,O]/g, "")
           .substring(0, 5);
-        const companyCode =
-          comp + (Math.random() + 1).toString(15).substring(2, 6);
+        const companyCode = (Math.random() + 1).toString(15).substring(2, 8);
         const success = await db.query(
           `INSERT INTO users(name,username,email,role,company,company_code,location,password,longitude,latitude,profile_pict,is_active) VALUE ("${name}","${username}","${email}","${role}","${req.body.company}","${companyCode}","${location}","${hashed}","${longitude}","${latitude}","${profile_pict}","${status}")`
         );
@@ -193,6 +207,7 @@ exports.confirmAccount = async (req, res, next) => {
         const success = await db.query(
           `UPDATE users SET is_active=${1} WHERE id=${req.params.id}`
         );
+
         if (success) {
           return res.status(200).json({
             message: "Distributor confirmed",

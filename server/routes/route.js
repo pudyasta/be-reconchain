@@ -7,6 +7,7 @@ const {
   updateUser,
   confirmAccount,
   getDistributorRequest,
+  getDistributorList,
 } = require("../controller/user");
 const { trusted, producer } = require("../services/middleware");
 
@@ -16,6 +17,8 @@ const { trusted, producer } = require("../services/middleware");
 // });
 
 userRoute.get("/distributor-request", producer, getDistributorRequest);
+
+userRoute.get("/distributor-list", producer, getDistributorList);
 
 userRoute.post("/login", login);
 
