@@ -1,6 +1,5 @@
 const express = require("express");
 const userRoute = express.Router();
-const shell = require("shelljs");
 const {
   login,
   register,
@@ -10,11 +9,6 @@ const {
   getDistributorList,
 } = require("../controller/user");
 const { trusted, producer } = require("../services/middleware");
-
-// userRoute.get("/interact", () => {
-//   shell.exec("npx hardhat run scripts/interact.js");
-//   console.log("oke");
-// });
 
 userRoute.get("/distributor-request", producer, getDistributorRequest);
 

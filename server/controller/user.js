@@ -14,7 +14,7 @@ exports.getDistributorRequest = async (req, res) => {
       data: allAccounts,
     });
   } catch (error) {
-    res.status.json({ message: "Internal server Error" });
+    res.status(500).json({ message: "Internal server Error" });
   }
 };
 
