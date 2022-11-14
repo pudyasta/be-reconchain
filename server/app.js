@@ -4,7 +4,7 @@ const app = express();
 
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/route");
-const deployRoute = require("./routes/deployRoute");
+// const deployRoute = require("./routes/deployRoute");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -21,4 +21,4 @@ app.use((req, res, next) => {
 app.listen(process.env.PORT || 3000);
 console.log("Server running");
 app.use("/user", userRoute);
-app.use("/deploy", deployRoute);
+// app.use("/deploy", deployRoute);
