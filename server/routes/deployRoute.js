@@ -2,15 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const deployRoute = express.Router();
 const shell = require("shelljs");
-const main = require("../../scripts/interact");
+const { deployQr } = require("../controller/deployController");
+const { producer } = require("../services/middleware");
 
 deployRoute.get("/interact", async (req, res, next) => {
-  //   const oldAddress = process.env.CONTRACT_ADDRESS;
-  //   console.log(oldAddress);
-  //   process.env.CONTRACT_ADDRESS = req.body.address;
-  //   main("Halo baru coba");
-  shell.exec("npx hardhat run scripts/interact.js");
-  //   console.log(success);
+  console.log("first");
 });
 
+deployRoute.post("/getqr", producer, deployQr);
 module.exports = deployRoute;

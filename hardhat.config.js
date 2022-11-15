@@ -9,7 +9,6 @@ module.exports = {
   networks: {
     hardhat: {},
     matic: {
-      gasPrice: 2500000000,
       url: API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
     },

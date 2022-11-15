@@ -21,11 +21,8 @@ const helloWorldContract = new ethers.Contract(
   contract.abi,
   signer
 );
-alchemyProvider.getGasPrice().then(console.log);
 
 const main = async function (msg) {
-  // const add = await alchemyProvider.getCode("latest");
-  // console.log(add);
   const message = await helloWorldContract.messagex();
   console.log("The message is: " + message);
 
@@ -37,10 +34,10 @@ const main = async function (msg) {
   const newMessage = await helloWorldContract.messagex();
   // const newAddress = await alchemyProvider.getBlock("latest");
   console.log(newMessage);
-  // return {
-  //   new: newMessage,
-  //   // block: newAddress.transactions[newAddress.transactions.length - 1],
-  // };
+  return {
+    new: newMessage,
+    // block: newAddress.transactions[newAddress.transactions.length - 1],
+  };
 };
 main();
 // module.exports = main;

@@ -26,6 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
     "mysql2": "^2.3.3",
+    "qrcode": "^1.5.1",
     "shelljs": "^0.8.5"
   }
 }
