@@ -3,41 +3,33 @@ require("dotenv").config();
 const { ethers } = require("hardhat");
 
 const { PRIVATE_KEY } = process.env;
-const API_KEY = "sin8g3FjPk-9re6lqMN_t5ftHcc_LVo9";
-const CONTRACT_ADDRESS = "0x52E38eEA58FbD494F684857CF243017daCa9c987";
+const API_KEY = "DuO3sZEiyNDhkh8-PBeiAcGTmAxNig54";
 
 const contract = require("../artifacts/contracts/HelloWorld.sol/HelloWorld.json");
 
 const alchemyProvider = new ethers.providers.AlchemyProvider(
-  (network = "matic"),
+  (network = "maticmum"),
   API_KEY
 );
 
 const signer = new ethers.Wallet(PRIVATE_KEY, alchemyProvider);
 
 // contract instance
-const helloWorldContract = new ethers.Contract(
-  CONTRACT_ADDRESS,
-  contract.abi,
-  signer
-);
 
-const main = async function (msg) {
-  const message = await helloWorldContract.messagex();
-  console.log("The message is: " + message);
-
-  const tx = await helloWorldContract.update(
-    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+exports.main = async function (data, block) {
+  const CONTRACT_ADDRESS = block;
+  const helloWorldContract = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    contract.abi,
+    signer
   );
+  const message = await helloWorldContract.messagex();
+
+  const tx = await helloWorldContract.update(data);
   await tx.wait();
 
-  const newMessage = await helloWorldContract.messagex();
-  // const newAddress = await alchemyProvider.getBlock("latest");
-  console.log(newMessage);
+  const newAddress = await alchemyProvider.getBlock("latest");
   return {
-    new: newMessage,
-    // block: newAddress.transactions[newAddress.transactions.length - 1],
+    block: newAddress.transactions[newAddress.transactions.length - 1],
   };
 };
-main();
-// module.exports = main;

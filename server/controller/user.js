@@ -119,7 +119,7 @@ exports.register = async (req, res) => {
         );
         if (success) {
           const token = jwt.sign(
-            { username, password, company_code, role, email },
+            { username, password, companyCode, role, email },
             "ppp"
           );
           return res.status(200).json({
