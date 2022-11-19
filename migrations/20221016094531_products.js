@@ -13,6 +13,8 @@ exports.up = function (knex) {
     table.string("company_code").notNullable();
     table.string("shipping_status").notNullable();
     table.string("to_address").notNullable();
+    table.string("longitude").notNullable();
+    table.string("latitude").notNullable();
   });
 };
 

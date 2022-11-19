@@ -18,7 +18,7 @@ exports.contractDeploy = async function (req, res, next) {
         JSON.stringify({ producer_loc, carbon, date })
       );
       const query = db.query(
-        `INSERT INTO products(product_id,product_name,material,chain,product_status,company_code,shipping_status,to_address) VALUE('${id}','${product_name}','${material}','${address}','good','${res.data.company_code}','packed','${address}')`
+        `INSERT INTO products(product_id,product_name,material,chain,product_status,company_code,shipping_status,to_address,longitude,latitude) VALUE('${id}','${product_name}','${material}','${address}','good','${res.data.company_code}','packed','${address}','${res.data.longitude}','${res.data.latitude}')`
       );
       if (query) {
         return res.status(200).json({ address: address, data });
