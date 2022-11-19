@@ -11,14 +11,13 @@ exports.productList = async (req, res, next) => {
   const chains = await db.query(
     `SELECT * FROM products WHERE product_id='${params}'`
   );
-  const data = [];
-
-  chains.forEach(async (e) => {
+  let data = [];
+  await chains.map(async (e) => {
     const contract = await getContract(e.chain);
     const a = JSON.parse(contract);
     data.push(a);
-    console.log(data);
   });
+  console.log(data);
   // console.log(data);
   //   //   const ok = await fetch(
   //   //     "https://api.block16.io/v1/address/0x0000000000000000000000000000000000000001/transactions"

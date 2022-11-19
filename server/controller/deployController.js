@@ -38,9 +38,7 @@ exports.getLoc = async (req, res) => {
     const data = await db.query(
       `SELECT longitude,latitude FROM products WHERE product_id='${req.params.id}'`
     );
-    return res.status(200).json({
-      data: data[data.length - 1],
-    });
+    return res.status(200).json(data[data.length - 1]);
   } catch (error) {
     return res.json(500);
   }
