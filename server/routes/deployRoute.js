@@ -9,7 +9,7 @@ const { productList } = require("../controller/productList");
 const { producer, distributor } = require("../services/middleware");
 
 deployRoute.get("/product-list/:id", producer, productList);
-deployRoute.get("/location/:id", producer, getLoc);
+deployRoute.get("/location/:id", getLoc);
 deployRoute.post("/deploy-product", producer, contractDeploy);
 deployRoute.post("/update-product", distributor, updateProduct);
 
