@@ -56,8 +56,8 @@ exports.login = async (req, res, next) => {
               company_code: user.data.company_code,
               role: user.data.role,
               email: user.data.email,
-              long: user.data.longitude,
-              lat: user.data.lat,
+              longitude: user.data.longitude,
+              latitude: user.data.latitude,
               company: user.data.company,
             },
             "ppp"
