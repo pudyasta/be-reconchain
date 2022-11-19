@@ -8,41 +8,35 @@ const { getContract } = require("../../scripts/getContract");
 
 exports.productList = async (req, res, next) => {
   const params = req.params.id;
-  const chains = await db.query(
-    `SELECT * FROM products WHERE product_id='${params}'`
-  );
-  let data = [];
-  const ok = await chains.map(async (e) => {
-    const contract = await getContract(e.chain);
-    const a = await JSON.parse(contract);
-    return a;
-  });
-  console.log(ok);
-  // console.log(data);
-  //   //   const ok = await fetch(
-  //   //     "https://api.block16.io/v1/address/0x0000000000000000000000000000000000000001/transactions"
-  //   //   );
-  //   const ok = await getContract("0x9c97B0b5d55a34a969b7Ff7251aC1fD103D7A3c6");
-  //   console.log(ok);
-  //   //   const ok1 = await ok();
+  try {
+    const chains = await db.query(
+      `SELECT * FROM products WHERE product_id='${params}'`
+    );
+    if (chains.length > 0) {
+      const company = await db.query(
+        `SELECT company from users WHERE company_code='${chains[0].company_code}'`
+      );
+      let data = [];
+      let total = 0;
+      for (let i = 0; i < chains.length; i++) {
+        const a = await getContract(chains[i].chain);
+        x = JSON.parse(a);
+        total += Number(x.carbon);
+        data.push(JSON.parse(a));
+      }
 
-  //   //   fetch(
-  //   //     "https://api.block16.io/v1/address/0x0000000000000000000000000000000000000001/transactions"
-  //   //   )
-  //   //     .then((response) => response.json())
-  //   //     .then((data) => console.log(data));
-  //   //   //   console.log(ok1);
-
-  // const config = {
-  //   apiKey: "DuO3sZEiyNDhkh8-PBeiAcGTmAxNig54",
-  //   network: Network.MATIC_MUMBAI,
-  // };
-  // const alchemy = new Alchemy(config);
-
-  // const data = await alchemy.core.getAssetTransfers({
-  //   toAddress: "0x9c97B0b5d55a34a969b7Ff7251aC1fD103D7A3c6",
-  //   category: ["external", "erc20", "erc721", "erc1155", "internal"],
-  // });
-
-  // console.log(data);
+      return res.status(200).json({
+        product_name: chains[0].product_name,
+        shipping_status: chains[chains.length - 1].shipping_status,
+        company: company[0].company,
+        material: chains[0].material,
+        manufacture: data[0].date,
+        data,
+      });
+    } else {
+      return res.status(404).json({ data: "Not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };

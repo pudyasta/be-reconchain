@@ -44,6 +44,6 @@ exports.getLoc = async (req, res) => {
       return res.status(404).json({ data: "Not found" });
     }
   } catch (error) {
-    return res.json(500);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
