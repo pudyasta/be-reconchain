@@ -32,3 +32,16 @@ exports.deployQr = async (req, res, next) => {
     console.log(error);
   }
 };
+
+exports.getLoc = async (req, res) => {
+  try {
+    const data = await db.query(
+      `SELECT longitude,latitude FROM products WHERE product_id='${req.params.id}'`
+    );
+    return res.status(200).json({
+      data: data[data.length - 1],
+    });
+  } catch (error) {
+    return res.json(500);
+  }
+};

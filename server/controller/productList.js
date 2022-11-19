@@ -9,7 +9,7 @@ const { getContract } = require("../../scripts/getContract");
 exports.productList = async (req, res, next) => {
   const params = req.params.id;
   const chains = await db.query(
-    `SELECT chain FROM products WHERE product_id='${params}'`
+    `SELECT * FROM products WHERE product_id='${params}'`
   );
   const data = [];
 
@@ -17,8 +17,9 @@ exports.productList = async (req, res, next) => {
     const contract = await getContract(e.chain);
     const a = JSON.parse(contract);
     data.push(a);
+    console.log(data);
   });
-  console.log(data);
+  // console.log(data);
   //   //   const ok = await fetch(
   //   //     "https://api.block16.io/v1/address/0x0000000000000000000000000000000000000001/transactions"
   //   //   );
