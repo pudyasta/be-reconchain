@@ -12,6 +12,7 @@ exports.up = function (knex) {
     table.string("product_status").notNullable();
     table.string("company_code").notNullable();
     table.string("shipping_status").notNullable();
+    table.string("to_address").notNullable();
   });
 };
 

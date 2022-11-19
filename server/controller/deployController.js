@@ -1,5 +1,6 @@
 const db = require("../services/db");
 const qrcode = require("qrcode");
+const bcrypt = require("bcrypt");
 
 exports.deployQr = async (req, res, next) => {
   const count = req.body.count;
@@ -10,11 +11,13 @@ exports.deployQr = async (req, res, next) => {
       const random = Math.random().toString(36).substring(2, 7);
       const qr = "RCN" + res.data.company_code + random;
       const url = "https://reconchain.vercel.app/track/" + qr;
-      const a = await qrcode.toDataURL(qr);
+
+      const a = await qrcode.toDataURL(url);
+      const hashed = bcrypt.hashSync(a, 10);
       data.push({ url, image: a });
       i == count - 1
-        ? (queue += `('${url}','available','${res.data.username}','${a}')`)
-        : (queue += `('${url}','available','${res.data.username}','${a}'),`);
+        ? (queue += `('${url}','available','${res.data.username}','${hashed}')`)
+        : (queue += `('${url}','available','${res.data.username}','${hashed}'),`);
     }
 
     const query = `INSERT INTO qrcode(qrcode_id,status,username,image_url) VALUES${queue}`;
@@ -26,6 +29,6 @@ exports.deployQr = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("first");
+    console.log(error);
   }
 };
