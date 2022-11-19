@@ -6,12 +6,12 @@ const { updateProduct } = require("../controller/contractDeploy");
 const { contractDeploy } = require("../controller/contractInit");
 const { deployQr, getLoc } = require("../controller/deployController");
 const { productList } = require("../controller/productList");
-const { producer } = require("../services/middleware");
+const { producer, distributor } = require("../services/middleware");
 
 deployRoute.get("/product-list/:id", producer, productList);
 deployRoute.get("/location/:id", producer, getLoc);
 deployRoute.post("/deploy-product", producer, contractDeploy);
-deployRoute.post("/update-product", updateProduct);
+deployRoute.post("/update-product", distributor, updateProduct);
 
 deployRoute.post("/getqr", producer, deployQr);
 module.exports = deployRoute;
