@@ -1,3 +1,4 @@
+const { deployProduct } = require("../../scripts/deploy");
 const { main } = require("../../scripts/interact");
 const db = require("../services/db");
 
@@ -8,14 +9,15 @@ exports.updateProduct = async function (req, res, next) {
   if (id && carbon && detination && date && shipping_status && product_status) {
     try {
       const row = await db.query(
-        `SELECT chain FROM products WHERE product_id='${id}'`
+        `SELECT * FROM products WHERE product_id='${id}'`
       );
-      const address = await main(
-        `${{ detination, carbon, date }}`,
-        row[0].chain
+      const data = row[0];
+      const address = await deployProduct(
+        JSON.stringify({ detination, carbon, date })
       );
+
       const query = db.query(
-        `UPDATE products SET shipping_status='${shipping_status}',product_status='${product_status}' WHERE product_id='${id}'`
+        `INSERT INTO products(product_id,product_name,material,chain,product_status,company_code,shipping_status,to_address) VALUE('${data.product_id}','${data.product_name}','${data.material}','${address}','${product_status}','${res.data.company_code}','${shipping_status}','${data.chain}')`
       );
       if (query) {
         return res.status(200).json({
@@ -27,6 +29,7 @@ exports.updateProduct = async function (req, res, next) {
             date,
             shipping_status,
             product_status,
+            to_address: data.chain,
           },
         });
       }

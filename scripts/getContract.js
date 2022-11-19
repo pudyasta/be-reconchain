@@ -23,17 +23,6 @@ exports.getContract = async function (block) {
     contract.abi,
     signer
   );
-  const newAddress = await alchemyProvider.getTransactionReceipt(
-    "0x9c97B0b5d55a34a969b7Ff7251aC1fD103D7A3c6"
-  );
-
-  return newAddress;
-  //   console.log(message);
-  //   const tx = await helloWorldContract.update(data);
-  //   await tx.wait();
-
-  //   const newAddress = await alchemyProvider.getBlock("latest");
-  //   return {
-  //     block: newAddress.transactions[newAddress.transactions.length - 1],
-  //   };
+  const message = await helloWorldContract.messagex();
+  return message;
 };

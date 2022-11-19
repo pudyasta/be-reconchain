@@ -28,8 +28,6 @@ exports.main = async function (data, block) {
   const tx = await helloWorldContract.update(data);
   await tx.wait();
 
-  const newAddress = await alchemyProvider.getBlock("latest");
-  return {
-    block: newAddress.transactions[newAddress.transactions.length - 1],
-  };
+  const newAddress = tx.hash;
+  return newAddress;
 };

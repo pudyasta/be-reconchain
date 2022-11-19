@@ -10,7 +10,7 @@ const { producer } = require("../services/middleware");
 
 deployRoute.get("/product-list", producer, productList);
 deployRoute.post("/deploy-product", producer, contractDeploy);
-deployRoute.post("/deploy-product", producer, contractDeploy);
+deployRoute.post("/update-product", producer, updateProduct);
 
 deployRoute.post("/getqr", producer, deployQr);
 module.exports = deployRoute;
