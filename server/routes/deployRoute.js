@@ -11,7 +11,7 @@ const { producer } = require("../services/middleware");
 deployRoute.get("/product-list/:id", producer, productList);
 deployRoute.get("/location/:id", producer, getLoc);
 deployRoute.post("/deploy-product", producer, contractDeploy);
-deployRoute.post("/update-product", producer, updateProduct);
+deployRoute.post("/update-product", updateProduct);
 
 deployRoute.post("/getqr", producer, deployQr);
 module.exports = deployRoute;
