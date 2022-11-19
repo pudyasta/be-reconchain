@@ -31,7 +31,7 @@ exports.updateProduct = async function (req, res, next) {
           address: address,
           data: {
             id,
-            detination,
+            destination,
             carbon,
             date,
             shipping_status,
