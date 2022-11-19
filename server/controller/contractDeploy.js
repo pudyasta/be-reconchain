@@ -3,17 +3,24 @@ const { main } = require("../../scripts/interact");
 const db = require("../services/db");
 
 exports.updateProduct = async function (req, res, next) {
-  const { id, detination, carbon, date, shipping_status, product_status } =
+  const { id, destination, carbon, date, shipping_status, product_status } =
     req.body;
 
-  if (id && carbon && detination && date && shipping_status && product_status) {
+  if (
+    id &&
+    carbon &&
+    destination &&
+    date &&
+    shipping_status &&
+    product_status
+  ) {
     try {
       const row = await db.query(
         `SELECT * FROM products WHERE product_id='${id}'`
       );
       const data = row[0];
       const address = await deployProduct(
-        JSON.stringify({ detination, carbon, date })
+        JSON.stringify({ destination, carbon, date })
       );
 
       const query = db.query(

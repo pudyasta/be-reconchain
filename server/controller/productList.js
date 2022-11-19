@@ -2,13 +2,23 @@
 // const axios = require("axios");
 require("dotenv").config();
 const { Alchemy, Network } = require("alchemy-sdk");
+const db = require("../services/db");
+
 const { getContract } = require("../../scripts/getContract");
 
 exports.productList = async (req, res, next) => {
-  // const
-  const ok = await getContract("0x74fA6EC65bE8DE61300A4D2386C3F6d39708dd7c");
-  const a = JSON.parse(ok);
-  console.log(a.detination);
+  const params = req.params.id;
+  const chains = await db.query(
+    `SELECT chain FROM products WHERE product_id='${params}'`
+  );
+  const data = [];
+
+  chains.forEach(async (e) => {
+    const contract = await getContract(e.chain);
+    const a = JSON.parse(contract);
+    data.push(a);
+  });
+  console.log(data);
   //   //   const ok = await fetch(
   //   //     "https://api.block16.io/v1/address/0x0000000000000000000000000000000000000001/transactions"
   //   //   );

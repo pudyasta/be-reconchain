@@ -8,7 +8,7 @@ const { deployQr } = require("../controller/deployController");
 const { productList } = require("../controller/productList");
 const { producer } = require("../services/middleware");
 
-deployRoute.get("/product-list", producer, productList);
+deployRoute.get("/product-list/:id", producer, productList);
 deployRoute.post("/deploy-product", producer, contractDeploy);
 deployRoute.post("/update-product", producer, updateProduct);
 
